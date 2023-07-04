@@ -9,9 +9,9 @@ import config from "@/config";
 const app = createApp(App)
 
 console.log('环境变量=>', import.meta.env)
-axios.get(config.mockApi + '/login').then(res => {
-    console.log(res.data)
-})
+// axios.get(config.mockApi + '/login').then(res => {
+//     console.log(res.data)
+// })
 
 app.use(createPinia())
 app.use(router)
