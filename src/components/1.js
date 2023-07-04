@@ -3,3 +3,4 @@ let res = arr.reduce((pre, cur) => {
     return pre += cur
 }, 0)
 console.log(res)
+let b = 1
