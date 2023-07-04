@@ -4,3 +4,4 @@ let res = arr.reduce((pre, cur) => {
 }, 0)
 console.log(res)
 let a = 1
+let b = 1
