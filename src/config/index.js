@@ -24,6 +24,7 @@ const EnvConfig = {
 export default {
     // 默认是开发
     env,
+    namespace: 'manager',
     mock: true,
     ...EnvConfig[env]
 }

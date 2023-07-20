@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "@/config";
 import {ElMessage} from 'element-plus'
-import router from '@/router'
+import {useRoute} from "vue-router";
 // 状态
 const TOKEN_INVALID = 'Token认证失败,请重新登陆'
 const NETWORK_ERR = '网络异常,请稍后再试'
@@ -18,6 +18,7 @@ service.interceptors.request.use((req) => {
 })
 //响应拦截
 service.interceptors.response.use((res) => {
+    const router = useRoute()
     const {code, data, msg} = res.data
     if (code === 200) {
         return data
@@ -26,7 +27,7 @@ service.interceptors.response.use((res) => {
         ElMessage.error(msg ? msg : TOKEN_INVALID)
         setTimeout(() => {
             // 这里会有提示
-            router.push('/login').then()
+            router.push({path: "/login"});
         }, 1500)
         return Promise.reject(TOKEN_INVALID)
     } else {

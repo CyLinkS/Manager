@@ -12,7 +12,6 @@ const testApi = async () => {
     url: '/login',
     data: {name: 'zs'}
   })
-  console.log(res)
 }
 </script>
 
