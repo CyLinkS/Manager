@@ -14,6 +14,7 @@ const router = createRouter({
                 title: '首页',
             },
             redirect: 'Welcome',
+            // 这里的welcome组件会嵌套进home组件,所以外围的组件是Home
             children: [
                 {
                     name: 'Welcome',

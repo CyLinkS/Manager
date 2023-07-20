@@ -1,7 +1,7 @@
 <script setup>
 import {useRouter} from "vue-router";
-import router from "@/router";
-// const router = useRouter()
+
+const router = useRouter()
 
 const goLogin = () => {
   router.push('/login')
@@ -9,6 +9,11 @@ const goLogin = () => {
 </script>
 
 <template>
-  <h2>欢迎到主界面</h2>
-  <el-button @click="goLogin">去登陆</el-button>
+  <div class="welcome">
+    <h2>欢迎到主界面</h2>
+    <el-button @click="goLogin">去登陆</el-button>
+  </div>
 </template>
+
+<style lang="scss">
+</style>
