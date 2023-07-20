@@ -1,7 +1,8 @@
 <script setup>
 import {useRouter} from "vue-router";
+import router from "@/router";
+// const router = useRouter()
 
-const router = useRouter()
 const goLogin = () => {
   router.push('/login')
 }
