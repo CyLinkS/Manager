@@ -1,5 +1,9 @@
 import request from "@/utils/request";
 
-export const Login = (options) => {
-    return request(options)
+export const Login = (params) => {
+    return request({
+        url: '/login',
+        method: 'post',
+        data: params,
+    })
 }

@@ -47,11 +47,16 @@ function request(options) {
     if (options.method.toLocaleLowerCase() === 'get') {
         options.params = options.data
     }
+
+    let mock = config.mock
+    if ('mock' in options) {
+        mock = options.mock
+    }
     // TODO 如果是生产模式,一定是调用线上地址
     if (config.env === 'prod') {
         service.defaults.baseURL = config.baseApi
     } else {
-        service.defaults.baseURL = config.mock ? config.mockApi : config.baseApi
+        service.defaults.baseURL = mock ? config.mockApi : config.baseApi
     }
     return service(options)
 }
