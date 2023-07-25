@@ -3,7 +3,6 @@ import {User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
-import {useStateStore} from "@/stores";
 // 数据汇总
 const data = ref({
     // 用户
@@ -44,9 +43,6 @@ const login = () => {
         }
     })
 }
-
-// 测试pina
-const store = useStateStore()
 </script>
 
 <template>
