@@ -3,7 +3,7 @@ import storage from "@/utils/storage";
 
 export const useShopStore = defineStore({
     // 每个模块都有独立的id
-    id: 'shop',
+    id: 'user',
     state() {
         return {
             userInfo: '' || storage.getItem('userInfo') // 获取用户信息
@@ -12,6 +12,7 @@ export const useShopStore = defineStore({
     actions: {
         saveUserInfo(payload) {
             this.userInfo = payload
+            // storage.setItem('userInfo', payload)
         }
     },
     // 开启数据缓存
@@ -19,7 +20,7 @@ export const useShopStore = defineStore({
         enabled: true,
         strategies: [
             {
-                key: 'shop',
+                key: 'manager',
                 storage: localStorage
             }
         ]

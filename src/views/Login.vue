@@ -3,7 +3,8 @@ import {User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
-import {useShopStore} from "@/stores/shop";
+import {useShopStore} from "@/stores/user";
+import storage from "@/utils/storage";
 
 // 数据汇总
 const data = ref({
@@ -11,20 +12,21 @@ const data = ref({
     user: {
         userName: "",
         userPwd: '123456',
-    },
-    rules: {
-        userName: [
-            {
-                required: true, message: '请输入用户名', trigger: 'blur'
-            }
-        ],
-        userPwd: [
-            {
-                required: true, message: '请输入用户密码', trigger: 'blur'
-            }
-        ]
     }
 })
+// rules 不需要响应式
+const rules = {
+    userName: [
+        {
+            required: true, message: '请输入用户名', trigger: 'blur'
+        }
+    ],
+    userPwd: [
+        {
+            required: true, message: '请输入用户密码', trigger: 'blur'
+        }
+    ]
+}
 
 // 得到loginForm dom节点
 const loginForm = ref(null)
@@ -34,10 +36,9 @@ const login = () => {
         if (valid) {
             try {
                 const res = await Login(data.value.user)
-                Notification('操作成功', 'success')
+                Notification('登陆成功', 'success')
                 shop.saveUserInfo(res)
             } catch (err) {
-                Notification(err, 'error')
                 await Promise.reject(err)
             }
         } else {
@@ -54,7 +55,7 @@ let shop = useShopStore()
     <div class="login-wrapper">
         <div class="model">
             <div class="title">权限管理</div>
-            <el-form ref="loginForm" :model="data.user" status-icon :rules="data.rules">
+            <el-form ref="loginForm" :model="data.user" status-icon :rules="rules">
                 <el-form-item prop="userName">
                     <el-input type="text" :prefix-icon="User" v-model="data.user.userName"/>
                 </el-form-item>
