@@ -4,8 +4,7 @@ import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
 import {useShopStore} from "@/stores/user";
-import storage from "@/utils/storage";
-
+import {useRouter} from "vue-router";
 // 数据汇总
 const data = ref({
     // 用户
@@ -28,6 +27,9 @@ const rules = {
     ]
 }
 
+// 获取路由器实例
+const router = useRouter()
+
 // 得到loginForm dom节点
 const loginForm = ref(null)
 // 校验输入
@@ -38,6 +40,7 @@ const login = () => {
                 const res = await Login(data.value.user)
                 Notification('登陆成功', 'success')
                 shop.saveUserInfo(res)
+                await router.push('/')
             } catch (err) {
                 await Promise.reject(err)
             }

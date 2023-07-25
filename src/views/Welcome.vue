@@ -1,18 +1,37 @@
 <script setup>
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 
 const router = useRouter()
 
-const goLogin = () => {
-  router.push('/login')
-}
 </script>
 
 <template>
-  <div class="welcome">
-    <h2>欢迎到主界面</h2>
-    <el-button @click="goLogin">去登陆</el-button>
-  </div>
+    <div class="welcome">
+        <!--描述-->
+        <div class="content">
+            <div class="sub-title">Welcome</div>
+            <div class="desc"> - Vue3.0+Vite 通用权限管理系统</div>
+        </div>
+    </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.welcome {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .sub-title {
+        font-size: 30px;
+        line-height: 42px;
+        color: #409eff;
+    }
+
+    .desc {
+        text-align: right;
+        font-size: 14px;
+        color: #999;
+    }
+}
+</style>

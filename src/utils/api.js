@@ -5,6 +5,5 @@ export const Login = (params) => {
         url: '/users/login',
         method: 'post',
         data: params,
-        mock: false
     })
 }
