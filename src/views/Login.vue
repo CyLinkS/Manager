@@ -3,7 +3,7 @@ import {User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
-import {useStateStore} from "@/stores";
+import {useShopStore} from "@/stores/shop";
 // 数据汇总
 const data = ref({
     // 用户
@@ -34,7 +34,7 @@ const login = () => {
             try {
                 const res = await Login(data.value.user)
                 Notification('操作成功', 'success')
-                console.log(res)
+                shop.saveUserInfo(res)
             } catch (err) {
                 Notification(err, 'error')
                 await Promise.reject(err)
@@ -44,15 +44,15 @@ const login = () => {
         }
     })
 }
+// 测试pinia
+let shop = useShopStore()
 
-// 测试pina
-const store = useStateStore()
 </script>
 
 <template>
     <div class="login-wrapper">
         <div class="model">
-            <div class="title">权限管理- {{ store.state.userInfo }}</div>
+            <div class="title">权限管理</div>
             <el-form ref="loginForm" :model="data.user" status-icon :rules="data.rules">
                 <el-form-item prop="userName">
                     <el-input type="text" :prefix-icon="User" v-model="data.user.userName"/>
