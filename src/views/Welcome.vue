@@ -1,5 +1,5 @@
 <script setup>
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const router = useRouter()
 
@@ -15,5 +15,4 @@ const goLogin = () => {
   </div>
 </template>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
