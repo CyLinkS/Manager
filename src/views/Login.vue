@@ -1,5 +1,5 @@
 <script setup>
-import {User, View} from '@element-plus/icons-vue'
+import {Fold, User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
@@ -81,6 +81,20 @@ let shop = useShopStore()
     background: #f9fcff;
     width: 100vw;
     height: 100vh;
+
+    .box {
+        width: 500px;
+        height: 50px;
+        background: #fff;
+        margin-left: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .left {
+            display: flex;
+        }
+    }
 
     .model {
         width: 500px;

@@ -11,10 +11,11 @@ const app = createApp(App)
 
 console.log('环境变量=>', import.meta.env)
 
+
+// 注册所有图标
+// for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+//     app.component(key, component)
+// }
 app.use(store)
 app.use(router)
 app.mount('#app')
-// 注册所有图标
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
-}
