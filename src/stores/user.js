@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import storage from "@/utils/storage";
 
-export const useShopStore = defineStore({
+export const useUserStore = defineStore({
     // 每个模块都有独立的id
     id: 'user',
     state() {

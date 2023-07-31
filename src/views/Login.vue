@@ -3,7 +3,7 @@ import {Fold, User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
-import {useShopStore} from "@/stores/user";
+import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
 // 数据汇总
 const data = ref({
@@ -39,7 +39,7 @@ const login = () => {
             try {
                 const res = await Login(data.value.user)
                 Notification('登陆成功', 'success')
-                shop.saveUserInfo(res)
+                user.saveUserInfo(res)
                 await router.push('/')
             } catch (err) {
                 await Promise.reject(err)
@@ -50,7 +50,7 @@ const login = () => {
     })
 }
 // 测试pinia
-let shop = useShopStore()
+let user = useUserStore()
 
 </script>
 

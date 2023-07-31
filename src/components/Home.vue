@@ -1,14 +1,54 @@
 <script setup>
-import {ArrowDown, Bell, Fold, Setting} from "@element-plus/icons-vue";
-import {ref} from "vue";
-// 用户信息定义
-const userInfo = ref({
-    userName: 'Link',
-    userEmail: '188888@163.com'
-})
+import {onMounted, ref} from "vue";
+import {useUserStore} from "@/stores/user";
+import {getNoticeCount, getMenuList} from '@/utils/api'
+import {storeToRefs} from 'pinia'
+import TreeMenu from "@/components/TreeMenu.vue";
+import {ArrowDown, Bell, Expand, Fold} from "@element-plus/icons-vue";
+import {useRoute} from "vue-router";
+// 获取store中的用户信息
+const userStore = useUserStore()
+let {userInfo} = storeToRefs(userStore)
 
 // 切换侧边栏字段定义
 const isCollapse = ref(false)
+
+// 定义notice 提示小红点
+let noticeCount = ref(0)
+
+// 返回notice请求函数
+const handleNoticeCount = async () => {
+    try {
+        let res = await getNoticeCount()
+        noticeCount.value = Number(res)
+    } catch (err) {
+        await Promise.reject(err)
+    }
+}
+
+// 定义菜单列表
+const userMenu = ref([])
+// 对菜单的请求赋值
+const handleMenuList = async () => {
+    try {
+        let res;
+        res = await getMenuList();
+        userMenu.value = res
+    } catch (err) {
+        await Promise.reject(err)
+    }
+}
+
+// 定义当前的菜单
+const activeMenu = ref('')
+const route = useRoute()
+activeMenu.value = route.fullPath
+
+// 在组件挂载时候请求一次
+onMounted(() => {
+    handleNoticeCount()
+    handleMenuList()
+})
 
 // 处理退出登陆函数
 const handleLogout = (key) => {
@@ -21,6 +61,7 @@ const toggleFold = () => {
 }
 </script>
 
+
 <template>
     <!--首先分左右结构-->
     <div class="basic-layout">
@@ -31,25 +72,16 @@ const toggleFold = () => {
                 <img src="@/assets/images/logo-with-shadow.png" alt="">
                 <span>Vite</span>
             </div>
-            <!--导航菜单-->
+            <!--TODO 导航菜单-->
             <el-menu
                 router
                 background-color="#001529"
                 text-color="#fff"
-                default-active="2"
+                :default-active='activeMenu'
                 class="nav-menu"
                 :collapse="isCollapse"
             >
-                <el-sub-menu index="1">
-                    <template #title>
-                        <el-icon>
-                            <Setting/>
-                        </el-icon>
-                        <span>系统管理</span>
-                    </template>
-                    <el-menu-item index="1">用户管理</el-menu-item>
-                    <el-menu-item index="2">菜单管理</el-menu-item>
-                </el-sub-menu>
+                <tree-menu :userMenu="userMenu"/>
             </el-menu>
         </div>
         <!--  右边结构  -->
@@ -58,27 +90,32 @@ const toggleFold = () => {
             <!--上结构-->
             <div class="nav-top">
                 <div class="nav-left">
-                    <el-icon @click="toggleFold">
-                        <Fold/>
-                    </el-icon>
+                    <div class="icon">
+                        <el-icon @click="toggleFold" v-if="!isCollapse">
+                            <Fold/>
+                        </el-icon>
+                        <el-icon @click="toggleFold" v-else>
+                            <Expand/>
+                        </el-icon>
+                    </div>
                     <div class="bread">面包屑</div>
                 </div>
                 <div class="user-info">
-                    <el-badge :is-dot="true" class="notice">
+                    <el-badge :is-dot="noticeCount>0" class="notice">
                         <el-icon>
                             <Bell/>
                         </el-icon>
                     </el-badge>
                     <el-dropdown @command="handleLogout" class="user-link">
                           <span class="el-dropdown-link">
-                              {{ userInfo.userName }}
+                              {{ userInfo['userName'] }}
                               <el-icon class="el-icon--right">
                                 <arrow-down/>
                               </el-icon>
                           </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="email">{{ userInfo.userEmail }}</el-dropdown-item>
+                                <el-dropdown-item command="email">邮箱: {{ userInfo['userEmail'] }}</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
@@ -101,6 +138,7 @@ const toggleFold = () => {
     position: relative;
 
     .nav-side {
+        z-index: 10;
         position: absolute;
         width: 200px;
         height: 100vh;
@@ -144,10 +182,11 @@ const toggleFold = () => {
 
         .nav-top {
             height: 50px;
+            position: relative;
             line-height: 50px;
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid #001529;
+            box-shadow: 0 1px 5px #ccc;
             padding: 0 20px;
             user-select: none;
 
@@ -155,7 +194,9 @@ const toggleFold = () => {
                 display: flex;
                 align-items: center;
 
-                .el-icon {
+                .icon {
+                    display: flex;
+                    align-items: center;
                     margin-right: 15px;
                 }
             }
