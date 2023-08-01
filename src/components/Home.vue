@@ -6,6 +6,7 @@ import {storeToRefs} from 'pinia'
 import TreeMenu from "@/components/TreeMenu.vue";
 import {ArrowDown, Bell, Expand, Fold} from "@element-plus/icons-vue";
 import {useRoute} from "vue-router";
+import BreadCrumb from "@/components/BreadCrumb.vue";
 // 获取store中的用户信息
 const userStore = useUserStore()
 let {userInfo} = storeToRefs(userStore)
@@ -98,7 +99,9 @@ const toggleFold = () => {
                             <Expand/>
                         </el-icon>
                     </div>
-                    <div class="bread">面包屑</div>
+                    <div class="bread">
+                        <BreadCrumb/>
+                    </div>
                 </div>
                 <div class="user-info">
                     <el-badge :is-dot="noticeCount>0" class="notice">
@@ -145,7 +148,8 @@ const toggleFold = () => {
         background: #001529;
         color: white;
         overflow: hidden;
-        transition: width .5s;
+        user-select: none;
+        transition: width .3s;
 
         .logo {
             display: flex;

@@ -19,7 +19,7 @@ const router = createRouter({
                     path: '/welcome',
                     component: () => import('../views/Welcome.vue'),
                     meta: {
-                        title: '欢迎',
+                        title: '欢迎体验Vue3权限项目',
                     },
                 }
             ]
