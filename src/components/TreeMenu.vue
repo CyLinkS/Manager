@@ -16,9 +16,6 @@
         <!--未包裹的是没有收缩箭头的菜单, menuType是1才行,2代表按钮-->
         <el-menu-item v-else-if="menu['menuType'] ===1" :index="menu.path" :key="menu['_id']">
             <template #title>
-                <el-icon>
-                    <component :is="menu.icon"/>
-                </el-icon>
                 <span> {{ menu['menuName'] }}</span>
             </template>
         </el-menu-item>

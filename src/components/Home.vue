@@ -4,7 +4,7 @@ import {useUserStore} from "@/stores/user";
 import {getNoticeCount, getMenuList} from '@/utils/api'
 import {storeToRefs} from 'pinia'
 import TreeMenu from "@/components/TreeMenu.vue";
-import {ArrowDown, Bell, Expand, Fold} from "@element-plus/icons-vue";
+import {ArrowDown, BellFilled, Expand, Fold} from "@element-plus/icons-vue";
 import {useRoute} from "vue-router";
 import BreadCrumb from "@/components/BreadCrumb.vue";
 // 获取store中的用户信息
@@ -106,7 +106,7 @@ const toggleFold = () => {
                 <div class="user-info">
                     <el-badge :is-dot="noticeCount>0" class="notice">
                         <el-icon>
-                            <Bell/>
+                            <BellFilled/>
                         </el-icon>
                     </el-badge>
                     <el-dropdown @command="handleLogout" class="user-link">
@@ -128,9 +128,7 @@ const toggleFold = () => {
             <!--            -->
             <!--下内容区 -->
             <div class="wrapper">
-                <div class="main-page">
-                    <router-view></router-view>
-                </div>
+                <router-view></router-view>
             </div>
         </div>
     </div>
@@ -212,7 +210,16 @@ const toggleFold = () => {
                     // 修改element UI 使用深度穿透
                     :deep(.el-badge__content) {
                         position: absolute;
-                        top: 10px;
+                        left: 5px;
+                        top: 15px;
+                        width: 5px;
+                        height: 5px;
+                        border-radius: 50%;
+                    }
+
+                    &:hover {
+                        color: tomato;
+                        cursor: pointer;
                     }
                 }
 
@@ -235,6 +242,7 @@ const toggleFold = () => {
             background: #eef0f3;
             padding: 20px;
             height: calc(100vh - 50px);
+            overflow-y: auto;
 
             .main-page {
                 background: #fff;

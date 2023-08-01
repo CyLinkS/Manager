@@ -21,6 +21,13 @@ const router = createRouter({
                     meta: {
                         title: '欢迎体验Vue3权限项目',
                     },
+                }, {
+                    name: 'user',
+                    path: 'user',
+                    meta: {
+                        title: '用户管理'
+                    },
+                    component: () => import('@/views/User.vue')
                 }
             ]
         }, {
@@ -28,7 +35,7 @@ const router = createRouter({
             path: '/login',
             component: () => import('../views/Login.vue'),
             meta: {
-                title: "登陆/注册"
+                title: "登陆"
             }
         }
     ]

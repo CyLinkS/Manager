@@ -21,6 +21,7 @@ const router = useRouter()
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #fff;
 
     .sub-title {
         font-size: 30px;
