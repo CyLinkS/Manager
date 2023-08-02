@@ -39,3 +39,29 @@ export const UserDel = (params) => {
         data: params
     })
 }
+// 角色名称列表
+export const getRoleListApi = () => {
+    return request({
+        url: '/roles/allList',
+        method: 'get',
+        data: {}
+    })
+}
+
+// 部门列表
+export const getDeptListApi = () => {
+    return request({
+        url: '/dept/list',
+        method: 'get',
+        data: {}
+    })
+}
+
+//用户管理数据提交
+export const userSubmit = (params) => {
+    return request({
+        url: '/users/operate',
+        method: 'post',
+        data: params
+    })
+}

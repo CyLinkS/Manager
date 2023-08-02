@@ -1,6 +1,6 @@
 <script setup>
-import {onMounted, reactive, ref} from "vue";
-import {getUserList, UserDel} from "@/utils/api";
+import {onMounted, reactive, ref, toRaw} from "vue";
+import {getUserList, UserDel, getRoleListApi, getDeptListApi, userSubmit} from "@/utils/api";
 import {Message} from '@/utils/ElementUTILS'
 import {dayjs} from 'element-plus'
 
@@ -70,6 +70,8 @@ const handleUserList = async () => {
 }
 onMounted(() => {
     handleUserList()
+    getDeptList()
+    getRoleList()
 })
 // 查询事件,获取用户列表
 const handleQuery = () => {
@@ -133,6 +135,128 @@ const handleSelectionChange = (val) => {
     checkedUserIds.value = arr
 
 }
+
+// 定义弹框数据
+const userDialogForm = ref({
+    state: 3
+})
+
+// 弹框是否显示
+const showModel = ref(false)
+
+// 定义表单校验规则
+const rules = {
+    userName: [
+        {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+        }
+    ],
+    userEmail: [
+        {
+            required: true,
+            message: '请输入用户邮箱',
+            trigger: 'blur'
+        }
+    ],
+    mobile: [
+        {
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'blur'
+        }, {
+            pattern: /1\d{10}/,
+            message: '请输入正确的手机格式',
+            trigger: 'blur'
+        }
+    ],
+    deptId: [
+        {
+            required: true,
+            message: '请输入用户邮箱',
+            trigger: 'blur'
+        }
+    ]
+}
+
+// 用户新增
+const handleCreate = () => {
+    showModel.value = true
+    action.value = 'create'
+}
+
+// 定义部门列表
+const deptList = ref([])
+// 获取部门列表
+const getDeptList = async () => {
+    try {
+        let res
+        res = await getDeptListApi()
+        deptList.value = res
+    } catch (err) {
+        await Promise.reject(err)
+    }
+}
+// 定义所有角色列表
+const roleList = ref([])
+// 获取所有角色列表
+const getRoleList = async () => {
+    try {
+        let res
+        res = await getRoleListApi()
+        roleList.value = res
+    } catch (err) {
+        await Promise.reject(err)
+    }
+}
+
+// 定义弹窗Ref
+const userDialogFormRef = ref()
+
+// 关闭用户弹窗
+const handleClose = () => {
+    userDialogFormRef.value.resetFields()
+    showModel.value = false
+}
+
+// 定义表单提交的行为 创建还是编辑
+const action = ref('create')
+
+// 提交弹窗数据
+const handleSubmit = () => {
+    userDialogFormRef.value.validate(async (valid) => {
+        if (valid) {
+            //TODO 把响应式转换成普通对象 toRaw ,但是我感觉还是JSON这种方法简单
+            let params = JSON.parse(JSON.stringify(userDialogForm.value))
+            params.userEmail += '@163.com'
+            params.action = action.value
+            let res = await userSubmit(params)
+            if (res) {
+                userDialogFormRef.value.resetFields()
+                if (action.value === 'create') {
+                    Message('用户创建成功')
+                } else {
+                    Message('用户编辑成功')
+                }
+                showModel.value = false
+                await handleUserList()
+            }
+        } else {
+            return false
+        }
+    })
+}
+// 用户编辑
+const handleEdit = (row) => {
+    showModel.value = true
+    action.value = 'edit'
+    setTimeout(() => {
+        let params = row
+        params.userEmail = params.userEmail.split('@')[0]
+        Object.assign(userDialogForm.value, row)
+    }, 0)
+}
 </script>
 
 <template>
@@ -140,7 +264,7 @@ const handleSelectionChange = (val) => {
         <div class="query-form">
             <el-form inline :model="userForm" ref="form">
                 <el-form-item label="用户ID" prop="userId">
-                    <el-input v-model="userForm.userId" placeholder="请输入用户ID"/>
+                    <el-input v-model="userForm['userId']" placeholder="请输入用户ID"/>
                 </el-form-item>
                 <el-form-item label="用户名称" prop="userName">
                     <el-input v-model="userForm.userName" placeholder="请输入用户名称"/>
@@ -161,7 +285,7 @@ const handleSelectionChange = (val) => {
         </div>
         <div class="base-table">
             <div class="action">
-                <el-button type="primary" size="small">新增</el-button>
+                <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
                 <el-button type="danger" size="small" @click="handlePatch">批量删除</el-button>
             </div>
             <el-table :data="userList" @selection-change="handleSelectionChange">
@@ -174,7 +298,7 @@ const handleSelectionChange = (val) => {
                 />
                 <el-table-column label="操作" width="150">
                     <template #default="scope">
-                        <el-button size="small">编辑</el-button>
+                        <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-popconfirm title="是否确认?"
                                        @confirm="handleOneUserDel(scope.row)"
                                        @cancel="()=>Message('取消删除','error')"
@@ -195,6 +319,59 @@ const handleSelectionChange = (val) => {
                 @current-change="handleCurrentChange"
             />
         </div>
+        <el-dialog title="用户新增" v-model="showModel">
+            <el-form ref="userDialogFormRef" :model="userDialogForm" label-width="80px" :rules="rules">
+                <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="userDialogForm.userName" :disabled="action==='edit'"
+                              placeholder="请输入用户名称 "/>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="userEmail">
+                    <el-input v-model="userDialogForm.userEmail" :disabled="action==='edit'"
+                              placeholder="请输入用户邮箱 ">
+                        <template #append>
+                            @163.com
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="mobile">
+                    <el-input v-model="userDialogForm.mobile" placeholder="请输入手机号 "/>
+                </el-form-item>
+                <el-form-item label="岗位" prop="job">
+                    <el-input v-model="userDialogForm['job']" placeholder="请输入岗位 "/>
+                </el-form-item>
+                <el-form-item label="状态" prop="state">
+                    <el-select v-model="userDialogForm.state" placeholder="请选择员工状态">
+                        <el-option :value="1" label="在职"></el-option>
+                        <el-option :value="2" label="离职"></el-option>
+                        <el-option :value="3" label="试用期"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="系统角色" prop="roleList">
+                    <el-select v-model="userDialogForm['roleList']" placeholder="请选择用户系统角色" multiple
+                               style="width: 100%">
+                        <el-option v-for="role in roleList" :key="role['_id']" :label="role['roleName']"
+                                   :value="role['_id']"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="所属部门" prop="deptId">
+                    <el-cascader
+                        v-model="userDialogForm.deptId"
+                        placeholder="请选择用户所属部门"
+                        :options="deptList"
+                        style="width: 50%"
+                        :props="{checkStrictly:true,value:'_id',label:'deptName'}"
+                        clearable/>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="handleClose">取消</el-button>
+                <el-button type="primary" @click="handleSubmit">
+                  确定
+                </el-button>
+              </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
