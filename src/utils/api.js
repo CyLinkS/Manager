@@ -20,7 +20,7 @@ export const getMenuList = () => {
     return request({
         url: '/menu/list',
         method: 'get',
-        data: {}
+        data: {},
     })
 }
 //用户列表

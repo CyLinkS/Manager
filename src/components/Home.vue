@@ -5,8 +5,9 @@ import {getNoticeCount, getMenuList} from '@/utils/api'
 import {storeToRefs} from 'pinia'
 import TreeMenu from "@/components/TreeMenu.vue";
 import {ArrowDown, BellFilled, Expand, Fold} from "@element-plus/icons-vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import BreadCrumb from "@/components/BreadCrumb.vue";
+import storage from "@/utils/storage";
 // 获取store中的用户信息
 const userStore = useUserStore()
 let {userInfo} = storeToRefs(userStore)
@@ -43,6 +44,7 @@ const handleMenuList = async () => {
 // 定义当前的菜单
 const activeMenu = ref('')
 const route = useRoute()
+const router = useRouter()
 activeMenu.value = route.fullPath
 
 // 在组件挂载时候请求一次
@@ -54,7 +56,9 @@ onMounted(() => {
 // 处理退出登陆函数
 const handleLogout = (key) => {
     if (key === 'email') return
-    console.log('退出登陆')
+    storage.clearAll()
+    userStore.logOut()
+    router.push('/login')
 }
 // 切换侧边栏菜单宽度
 const toggleFold = () => {

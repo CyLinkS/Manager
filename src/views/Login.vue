@@ -40,7 +40,7 @@ const login = () => {
                 const res = await Login(data.value.user)
                 Notification('登陆成功', 'success')
                 user.saveUserInfo(res)
-                await router.push('/')
+                await router.replace('/')
             } catch (err) {
                 await Promise.reject(err)
             }

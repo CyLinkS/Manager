@@ -13,6 +13,9 @@ export const useUserStore = defineStore({
         saveUserInfo(payload) {
             this.userInfo = payload
             // storage.setItem('userInfo', payload)
+        },
+        logOut() {
+            this.userInfo = ''
         }
     },
     // 开启数据缓存

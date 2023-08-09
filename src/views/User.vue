@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive, ref, toRaw} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {getUserList, UserDel, getRoleListApi, getDeptListApi, userSubmit} from "@/utils/api";
 import {Message} from '@/utils/ElementUTILS'
 import {dayjs} from 'element-plus'
@@ -48,13 +48,15 @@ const columns = ref([
         prop: 'createTime',
         formatter(row, column, value) {
             return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-        }
+        },
+        width: '170'
     }, {
         label: '最后登陆时间',
         prop: 'lastLoginTime',
         formatter(row, column, value) {
             return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-        }
+        },
+        width: '170'
     },
 ])
 // 获取用户列表
@@ -94,7 +96,7 @@ const handleCurrentChange = (cur) => {
 const handleOneUserDel = async (row) => {
     try {
         await UserDel({
-            userIds: [row['userId']]
+            userIds: [row.userId], //可单个删除，也可批量删除
         })
         Message('删除成功')
         await handleUserList()
@@ -295,6 +297,7 @@ const handleEdit = (row) => {
                                  :prop="item.prop"
                                  :label="item.label"
                                  :formatter="item.formatter"
+                                 :width="item.width"
                 />
                 <el-table-column label="操作" width="150">
                     <template #default="scope">
