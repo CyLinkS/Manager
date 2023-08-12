@@ -22,8 +22,8 @@ export default {
         window.localStorage.setItem(config.namespace, JSON.stringify(storage))
     },
     clearAll() {
-        // window.localStorage.removeItem(config.namespace)
-        window.localStorage.clear()
+        window.localStorage.removeItem(config.namespace)
+        // window.localStorage.clear()
     },
 
 }

@@ -18,7 +18,7 @@ service.interceptors.request.use((req) => {
     const headers = req.headers
     const home = router.currentRoute.value.fullPath
     if (router.currentRoute.value.fullPath !== '/login') {
-        const {token} = storage.getItem('userInfo')
+        const {token} = storage.getItem('userInfo') || ''
         if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
     }
     return req
@@ -52,7 +52,7 @@ service.interceptors.response.use((res) => {
  * 请求的核心函数
  * @param options 请求配置
  * */
-function request(options) {
+function request (options) {
     // 默认GET请求
     options.method = options.method || 'GET'
     if (options.method.toLocaleLowerCase() === 'get') {

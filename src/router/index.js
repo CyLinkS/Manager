@@ -1,5 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from './../components/Home.vue'
+import storage from "@/utils/storage";
+import {Message} from "@/utils/ElementUTILS";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,13 +23,22 @@ const router = createRouter({
                     meta: {
                         title: '欢迎体验Vue3权限项目',
                     },
-                }, {
+                },
+                {
                     name: 'user',
-                    path: 'user',
+                    path: '/system/user',
                     meta: {
                         title: '用户管理'
                     },
                     component: () => import('@/views/User.vue')
+                },
+                {
+                    name: 'menu',
+                    path: '/system/menu',
+                    meta: {
+                        title: '菜单管理'
+                    },
+                    component: () => import('@/views/Menu.vue')
                 }
             ]
         }, {
@@ -39,6 +50,21 @@ const router = createRouter({
             }
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    const {token} = storage.getItem('userInfo') || ''
+    if (token) {
+        next()
+    } else {
+        // 没token就返回login
+        if (to.path === '/login') {
+            next()
+        } else {
+            next('/login')
+            Message('请登陆后再试', 'error')
+        }
+    }
 })
 
 export default router

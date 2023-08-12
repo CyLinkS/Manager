@@ -6,13 +6,12 @@ export const useUserStore = defineStore({
     id: 'user',
     state() {
         return {
-            userInfo: '' || storage.getItem('userInfo') // 获取用户信息
+            userInfo: {} || storage.getItem('userInfo') // 获取用户信息
         }
     },
     actions: {
         saveUserInfo(payload) {
             this.userInfo = payload
-            // storage.setItem('userInfo', payload)
         },
         logOut() {
             this.userInfo = ''
