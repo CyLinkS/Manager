@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/stores/user";
 import {getNoticeCount, getMenuList} from '@/utils/api'
 import {storeToRefs} from 'pinia'
@@ -45,7 +45,9 @@ const handleMenuList = async () => {
 const activeMenu = ref('')
 const route = useRoute()
 const router = useRouter()
-activeMenu.value = route.fullPath
+watch(route, (newVal) => {
+    activeMenu.value = newVal.fullPath
+})
 
 // 在组件挂载时候请求一次
 onMounted(() => {
