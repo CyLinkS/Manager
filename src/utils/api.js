@@ -40,7 +40,7 @@ export const UserDel = (params) => {
     })
 }
 // 角色名称列表
-export const getRoleListApi = () => {
+export const getRoleAllList = () => {
     return request({
         url: '/roles/allList',
         method: 'get',
@@ -71,6 +71,14 @@ export const menuSubmit = (params) => {
     return request({
         url: '/menu/operate',
         method: 'post',
+        data: params
+    })
+}
+//获取用户角色列表
+export const getRoleList = (params) => {
+    return request({
+        url: '/roles/list',
+        method: 'get',
         data: params
     })
 }

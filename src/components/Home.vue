@@ -42,17 +42,19 @@ const handleMenuList = async () => {
 }
 
 // 定义当前的菜单
-const activeMenu = ref('')
 const route = useRoute()
+const activeMenu = ref('')
 const router = useRouter()
 watch(route, (newVal) => {
     activeMenu.value = newVal.fullPath
 })
 
+
 // 在组件挂载时候请求一次
 onMounted(() => {
     handleNoticeCount()
     handleMenuList()
+    activeMenu.value = route.fullPath
 })
 
 // 处理退出登陆函数

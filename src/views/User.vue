@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {getUserList, UserDel, getRoleListApi, getDeptListApi, userSubmit} from "@/utils/api";
+import {getUserList, UserDel, getRoleAllList, getDeptListApi, userSubmit} from "@/utils/api";
 import {Message} from '@/utils/ElementUTILS'
 import {dayjs} from 'element-plus'
 
@@ -206,7 +206,7 @@ const roleList = ref([])
 const getRoleList = async () => {
     try {
         let res
-        res = await getRoleListApi()
+        res = await getRoleAllList()
         roleList.value = res
     } catch (err) {
         await Promise.reject(err)
