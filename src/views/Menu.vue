@@ -1,90 +1,92 @@
 <template>
-    <div class="query-form">
-        <el-form inline :model="queryForm" ref="queryFormRef">
-            <el-form-item label="菜单名称" prop="userId">
-                <el-input v-model="queryForm['userId']" placeholder="请输入菜单名称"/>
-            </el-form-item>
-            <el-form-item label="菜单状态" prop="state">
-                <el-select v-model="queryForm.menuState">
-                    <el-option :value="1" label="正常"></el-option>
-                    <el-option :value="2" label="停用"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="handleQuery">查询</el-button>
-                <el-button @click="handleReset">重置</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
-    <div class="base-table">
-        <div class="action">
-            <el-button type="primary" size="small" @click="handleCreate(1,'')">新建菜单</el-button>
+    <div class="menu-manager">
+        <div class="query-form">
+            <el-form inline :model="queryForm" ref="queryFormRef">
+                <el-form-item label="菜单名称" prop="userId">
+                    <el-input v-model="queryForm['userId']" placeholder="请输入菜单名称"/>
+                </el-form-item>
+                <el-form-item label="菜单状态" prop="state">
+                    <el-select v-model="queryForm.menuState">
+                        <el-option :value="1" label="正常"></el-option>
+                        <el-option :value="2" label="停用"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="handleQuery">查询</el-button>
+                    <el-button @click="handleReset">重置</el-button>
+                </el-form-item>
+            </el-form>
         </div>
-        <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children' }">
-            <el-table-column v-for="item in columns"
-                             :key="item.prop"
-                             :width="item.width"
-                             :prop="item.prop"
-                             :formatter="item.formatter"
-                             :label="item.label">
-            </el-table-column>
-            <el-table-column label="操作" width="200">
-                <template #default="scope">
-                    <!--判断一下按钮是否需要新增-->
-                    <el-button v-show="scope.row.menuType === 1" @click="handleCreate(2,scope.row)" size="small">新增
-                    </el-button>
-                    <el-button @click="handleOneEdit(scope.row)" size="small">编辑</el-button>
-                    <el-button @click="handleOneDelete(scope.row)" type="danger" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
-    <el-dialog title="菜单新增" v-model="showModel">
-        <el-form ref="dialogFormRef" :model="menuForm" label-width="120" :rules="rules">
-            <el-form-item label="父级菜单" prop="parentId">
-                <el-cascader v-model="menuForm['parentId']"
-                             :options="menuList"
-                             :props="{checkStrictly:true,value:'_id',label:'menuName'}"
-                             clearable/>
-                <span style="margin-left: 20px">注意:未选,默认创建父级菜单</span>
-            </el-form-item>
-            <el-form-item label="菜单类型" prop="menuType">
-                <el-radio-group v-model="menuForm['menuType']">
-                    <el-radio :label="1">菜单</el-radio>
-                    <el-radio :label="2">按钮</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="菜单名称" prop="menuName">
-                <el-input v-model="menuForm['menuName']" placeholder="请输入菜单名称"/>
-            </el-form-item>
-            <el-form-item label="菜单图标" prop="icon" v-show="menuForm.menuType ===1">
-                <el-input v-model="menuForm['icon']" placeholder="请输入Icon图标"/>
-            </el-form-item>
-            <el-form-item label="路由地址" prop="path" v-show="menuForm.menuType ===1">
-                <el-input v-model="menuForm['path']" placeholder="请输入路由地址"/>
-            </el-form-item>
-            <el-form-item label="组件路径" prop="component" v-show="menuForm.menuType ===1">
-                <el-input v-model="menuForm['component']" placeholder="请输入组件路径"/>
-            </el-form-item>
-            <el-form-item label="权限标识" prop="menuCode" v-show="menuForm.menuType === 2">
-                <el-input v-model="menuForm['menuCode']" placeholder="请输入权限标识"/>
-            </el-form-item>
-            <el-form-item label="菜单状态" prop="menuState">
-                <el-radio-group v-model="menuForm['menuState']">
-                    <el-radio :label="1">正常</el-radio>
-                    <el-radio :label="2">停用</el-radio>
-                </el-radio-group>
-            </el-form-item>
-        </el-form>
-        <template #footer>
+        <div class="base-table">
+            <div class="action">
+                <el-button type="primary" size="small" @click="handleCreate(1,'')">新建菜单</el-button>
+            </div>
+            <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children' }">
+                <el-table-column v-for="item in columns"
+                                 :key="item.prop"
+                                 :width="item.width"
+                                 :prop="item.prop"
+                                 :formatter="item.formatter"
+                                 :label="item.label">
+                </el-table-column>
+                <el-table-column label="操作" width="200">
+                    <template #default="scope">
+                        <!--判断一下按钮是否需要新增-->
+                        <el-button v-show="scope.row.menuType === 1" @click="handleCreate(2,scope.row)" size="small">新增
+                        </el-button>
+                        <el-button @click="handleOneEdit(scope.row)" size="small">编辑</el-button>
+                        <el-button @click="handleOneDelete(scope.row)" type="danger" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <el-dialog title="菜单新增" v-model="showModel">
+            <el-form ref="dialogFormRef" :model="menuForm" label-width="120" :rules="rules">
+                <el-form-item label="父级菜单" prop="parentId">
+                    <el-cascader v-model="menuForm['parentId']"
+                                 :options="menuList"
+                                 :props="{checkStrictly:true,value:'_id',label:'menuName'}"
+                                 clearable/>
+                    <span style="margin-left: 20px">注意:未选,默认创建父级菜单</span>
+                </el-form-item>
+                <el-form-item label="菜单类型" prop="menuType">
+                    <el-radio-group v-model="menuForm['menuType']">
+                        <el-radio :label="1">菜单</el-radio>
+                        <el-radio :label="2">按钮</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="菜单名称" prop="menuName">
+                    <el-input v-model="menuForm['menuName']" placeholder="请输入菜单名称"/>
+                </el-form-item>
+                <el-form-item label="菜单图标" prop="icon" v-show="menuForm.menuType ===1">
+                    <el-input v-model="menuForm['icon']" placeholder="请输入Icon图标"/>
+                </el-form-item>
+                <el-form-item label="路由地址" prop="path" v-show="menuForm.menuType ===1">
+                    <el-input v-model="menuForm['path']" placeholder="请输入路由地址"/>
+                </el-form-item>
+                <el-form-item label="组件路径" prop="component" v-show="menuForm.menuType ===1">
+                    <el-input v-model="menuForm['component']" placeholder="请输入组件路径"/>
+                </el-form-item>
+                <el-form-item label="权限标识" prop="menuCode" v-show="menuForm.menuType === 2">
+                    <el-input v-model="menuForm['menuCode']" placeholder="请输入权限标识"/>
+                </el-form-item>
+                <el-form-item label="菜单状态" prop="menuState">
+                    <el-radio-group v-model="menuForm['menuState']">
+                        <el-radio :label="1">正常</el-radio>
+                        <el-radio :label="2">停用</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <template #footer>
               <span class="dialog-footer">
                 <el-button @click="handleClose">取消</el-button>
                 <el-button type="primary" @click="handleSubmit">
                   确定
                 </el-button>
               </span>
-        </template>
-    </el-dialog>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup>
@@ -132,10 +134,7 @@ const handleOneEdit = (row) => {
     showModel.value = true
     action.value = 'edit'
     nextTick(() => {
-        // 注意这个拷贝的语法
-        Object.assign(menuForm.value, row)
-        // 意思就是改变row不会改变menuForm的值
-        // menuForm.value = {...row}
+        menuForm.value = {...row}
     })
 }
 // 删除子菜单

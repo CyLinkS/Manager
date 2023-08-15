@@ -82,3 +82,11 @@ export const getRoleList = (params) => {
         data: params
     })
 }
+// 角色操作
+export const roleSubmit = (params) => {
+    return request({
+        url: '/roles/operate',
+        method: 'post',
+        data: params
+    })
+}
