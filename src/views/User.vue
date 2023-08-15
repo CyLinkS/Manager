@@ -29,14 +29,14 @@ const columns = ref([
     }, {
         label: '用户角色',
         prop: 'role',
-        formatter(row, column, value) {
+        formatter (row, column, value) {
             return value = Boolean(value) ? '管理员' : '员工'
 
         }
     }, {
         label: '用户状态',
         prop: 'state',
-        formatter(row, column, value) {
+        formatter (row, column, value) {
             return {
                 1: '在职',
                 2: '离职',
@@ -46,14 +46,14 @@ const columns = ref([
     }, {
         label: '注册时间',
         prop: 'createTime',
-        formatter(row, column, value) {
+        formatter (row, column, value) {
             return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
         },
         width: '170'
     }, {
         label: '最后登陆时间',
         prop: 'lastLoginTime',
-        formatter(row, column, value) {
+        formatter (row, column, value) {
             return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
         },
         width: '170'
@@ -96,7 +96,7 @@ const handleCurrentChange = (cur) => {
 const handleOneUserDel = async (row) => {
     try {
         await UserDel({
-            userIds: [row.userId], //可单个删除，也可批量删除
+            userIds: [row['userId']], //可单个删除，也可批量删除
         })
         Message('删除成功')
         await handleUserList()
@@ -297,8 +297,7 @@ const handleEdit = (row) => {
                                  :prop="item.prop"
                                  :label="item.label"
                                  :formatter="item.formatter"
-                                 :width="item.width"
-                />
+                                 :width="item.width"/>
                 <el-table-column label="操作" width="150">
                     <template #default="scope">
                         <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
