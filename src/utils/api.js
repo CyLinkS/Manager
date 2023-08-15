@@ -90,3 +90,11 @@ export const roleSubmit = (params) => {
         data: params
     })
 }
+//更新权限
+export const updatePermission = (params) => {
+    return request({
+        url: '/roles/update/permission',
+        method: 'post',
+        data: params
+    })
+}

@@ -80,7 +80,7 @@
             <template #footer>
               <span class="dialog-footer">
                 <el-button @click="handlePermissionClose">取消</el-button>
-                <el-button type="primary">确定</el-button>
+                <el-button type="primary" @click="handlePermissionSubmit">确定</el-button>
               </span>
             </template>
         </el-dialog>
@@ -89,7 +89,7 @@
 <script setup>
 import {nextTick, onMounted, ref} from "vue";
 import {dayjs} from "element-plus";
-import {getMenuList, getRoleList, roleSubmit} from "@/utils/api";
+import {getMenuList, getRoleList, roleSubmit, updatePermission} from "@/utils/api";
 import {Message} from "@/utils/ElementUTILS";
 // 查询字段定义
 const queryForm = ref({
@@ -226,7 +226,7 @@ const handlePermission = (row) => {
     curRoleName.value = row.roleName
     curRoleId.value = row._id
     showPermission.value = true
-    //TODO checkedKeys => 选中的子菜单  halfCheckedKeys=> 半选中的父菜单
+    //TODO checkedKeys => 选中的菜单
     let {checkedKeys, halfCheckedKeys} = row['permissionList']
     nextTick(() => {
         permissionTree.value.setCheckedKeys(checkedKeys)
@@ -248,7 +248,38 @@ const handleGetMenuList = async () => {
         await Promise.reject(err)
     }
 }
-
+// 权限提交
+const handlePermissionSubmit = async () => {
+    // TODO 获取选中的节点使用element提供的api来实现
+    let nodes = permissionTree.value.getCheckedNodes()
+    // TODO 半选中的主菜单 => halfKeys (系统管理/审批管理)
+    let halfKeys = permissionTree.value.getHalfCheckedKeys()
+    let checkedKeys = []
+    let parentKeys = []
+    nodes.map(r => {
+        if (!r.children) {
+            //TODO 没children代表是按钮级别的
+            checkedKeys.push(r._id)
+        } else {
+            //TODO 这是代表按钮往上一层的选中菜单节点(比如用户管理)
+            parentKeys.push(r._id)
+        }
+    })
+    let params = {
+        _id: curRoleId.value,
+        permissionList: {
+            checkedKeys,
+            halfCheckedKeys: parentKeys.concat(halfKeys)
+        }
+    }
+    try {
+        await updatePermission(params)
+        Message('权限设置成功')
+        showPermission.value = false
+    } catch (err) {
+        await Promise.reject(err)
+    }
+}
 </script>
 <style scoped lang="scss">
 
