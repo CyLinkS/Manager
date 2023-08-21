@@ -38,6 +38,7 @@
                 layout="prev, pager, next"
                 :total="Number(pager.total)"
                 :page-size="pager.pageSize"
+                :current-page="pager.pageNum"
                 @current-change="handleCurrentChange"
             />
         </div>
@@ -105,6 +106,7 @@ let showModel = ref(false)
 // 定义分页对象
 const pager = ref({
     total: 0,
+    pageNum: 1,
     pageSize: 10
 })
 // 定义columns菜单
@@ -117,7 +119,20 @@ const columns = [
         prop: 'remark',
     }, {
         label: '权限列表',
-        prop: 'codeList'
+        prop: 'permissionList',
+        formatter (row, column, value) {
+            let name = []
+            let list = value.halfCheckedKeys || []
+            list.map(r => {
+                if (r) {
+                    if (!actionMap.value[r]) {
+                        return false
+                    }
+                    name.push(actionMap.value[r])
+                }
+            })
+            return name.join(',')
+        }
     }, {
         label: '创建时间',
         prop: 'createTime',
@@ -125,7 +140,14 @@ const columns = [
             return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
         },
         width: '169'
-    }
+    }, {
+        label: '更新时间',
+        prop: 'updateTime',
+        formatter: (row, column, value) => {
+            return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        },
+        width: '169'
+    },
 ]
 // 角色列表初始化定义
 const roleList = ref([])
@@ -147,10 +169,16 @@ onMounted(() => {
     handleGetMenuList()
 })
 // 分页处理函数
-const handleCurrentChange = () => {}
+const handleCurrentChange = (val) => {
+    //当前的页码
+    pager.value.pageNum = val
+    handleGetRoleList()
+}
 // 操作行为
 const action = ref('create')
 // 弹出层Ref定义
+
+
 const dialogFormRef = ref(null)
 // 初始化提交表单
 const roleForm = ref({
@@ -227,7 +255,7 @@ const handlePermission = (row) => {
     curRoleId.value = row._id
     showPermission.value = true
     //TODO checkedKeys => 选中的菜单
-    let {checkedKeys, halfCheckedKeys} = row['permissionList']
+    let {checkedKeys} = row['permissionList']
     nextTick(() => {
         permissionTree.value.setCheckedKeys(checkedKeys)
     })
@@ -235,6 +263,7 @@ const handlePermission = (row) => {
 // 关闭权限弹框
 const handlePermissionClose = () => {
     showPermission.value = false
+    permissionTree.value.setCheckedKeys([], false)
 }
 // 权限数据
 const menuList = ref([])
@@ -244,6 +273,7 @@ const handleGetMenuList = async () => {
         let res
         res = await getMenuList()
         menuList.value = res
+        getActionMap(res)
     } catch (err) {
         await Promise.reject(err)
     }
@@ -276,9 +306,29 @@ const handlePermissionSubmit = async () => {
         await updatePermission(params)
         Message('权限设置成功')
         showPermission.value = false
+        await handleGetRoleList()
     } catch (err) {
         await Promise.reject(err)
     }
+}
+// 定义二级菜单映射表
+const actionMap = ref({})
+// 权限列表展示递归事件
+const getActionMap = (arr) => {
+    let action = {}
+    const deep = (arr) => {
+        for (const item of arr) {
+            if (item.children && item.action) {
+                action[item._id] = item.menuName
+            }
+            if (item.children && !item.action) {
+                deep(item.children)
+            }
+        }
+    }
+    deep(arr)
+    // 二级菜单映射表完成
+    actionMap.value = action
 }
 </script>
 <style scoped lang="scss">

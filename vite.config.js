@@ -29,6 +29,10 @@ export default defineConfig({
             "/api": {
                 target: "http://api-manager.marsview.cc",
                 changeOrigin: true
+            },
+            "/test": {
+                target: "http://localhost:3000",
+                changeOrigin: true
             }
         }
     },

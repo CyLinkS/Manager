@@ -30,7 +30,7 @@ const columns = ref([
         label: '用户角色',
         prop: 'role',
         formatter (row, column, value) {
-            return value = Boolean(value) ? '管理员' : '员工'
+            return value = Boolean(value) ? '员工' : '管理员'
 
         }
     }, {
@@ -118,7 +118,7 @@ const handlePatch = async () => {
         let res = await UserDel({
             userIds: checkedUserIds.value
         })
-        if (res['nModified'] > 0) {
+        if (res['modifiedCount'] > 0) {
             Message('批量删除成功')
             await handleUserList()
         }
@@ -351,7 +351,9 @@ const handleEdit = (row) => {
                 <el-form-item label="系统角色" prop="roleList">
                     <el-select v-model="userDialogForm['roleList']" placeholder="请选择用户系统角色" multiple
                                style="width: 100%">
-                        <el-option v-for="role in roleList" :key="role['_id']" :label="role['roleName']"
+                        <el-option v-for="role in roleList"
+                                   :key="role['_id']"
+                                   :label="role.roleName"
                                    :value="role['_id']"></el-option>
                     </el-select>
                 </el-form-item>

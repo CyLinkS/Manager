@@ -16,7 +16,6 @@ const service = axios.create({
 service.interceptors.request.use((req) => {
     // 给headers添加请求头 token
     const headers = req.headers
-    const home = router.currentRoute.value.fullPath
     if (router.currentRoute.value.fullPath !== '/login') {
         const {token} = storage.getItem('userInfo') || ''
         if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
@@ -28,7 +27,7 @@ service.interceptors.response.use((res) => {
     const {code, data, msg} = res.data
     if (code === 200) {
         return data
-    } else if (code === 40001) {
+    } else if (code === 20001) {
         // 40001 是判定账号密码问题
         ElMessage.error(msg ? msg : USER_ERROR)
         return Promise.reject(msg)

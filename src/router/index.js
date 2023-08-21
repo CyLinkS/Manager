@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import Home from './../components/Home.vue'
 import storage from "@/utils/storage";
 import {Message} from "@/utils/ElementUTILS";
 
@@ -9,7 +8,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: Home,
+            component: () => import('@/components/Home.vue'),
             meta: {
                 title: '首页',
             },

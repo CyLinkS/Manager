@@ -118,13 +118,14 @@ const menuList = ref([])
 
 // 新建父/子菜单
 const handleCreate = (type, row) => {
+    action.value = 'add'
     showModel.value = true
     //新增父/子菜单的区别是,新增子菜单要把父级菜单赋值
     if (type === 2) {
         //代表是子菜单新增,要把父级菜单赋值
         menuForm.value.parentId = [...row.parentId, row['_id']].filter(item => item)
     } else {
-        menuForm.value.parentId = null
+        menuForm.value.parentId = [null]
     }
 }
 
@@ -253,8 +254,9 @@ const handleSubmit = () => {
             params.action = action.value
             await menuSubmit(params)
             showModel.value = false
-            Message('菜单数据提交成功')
+            Message()
             dialogFormRef.value.resetFields()
+            window.location.reload()
             await handleGetMenuList()
         } catch (err) {
             await Promise.reject(err)
