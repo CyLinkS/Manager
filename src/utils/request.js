@@ -16,10 +16,8 @@ const service = axios.create({
 service.interceptors.request.use((req) => {
     // 给headers添加请求头 token
     const headers = req.headers
-    if (router.currentRoute.value.fullPath !== '/login') {
-        const {token} = storage.getItem('userInfo') || ''
-        if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
-    }
+    const {token} = storage.getItem('userInfo') || ''
+    if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
     return req
 })
 //响应拦截

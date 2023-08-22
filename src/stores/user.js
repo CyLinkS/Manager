@@ -15,6 +15,7 @@ export const useUserStore = defineStore({
     actions: {
         saveUserInfo (payload) {
             this.userInfo = payload
+            storage.setItem('userInfo', payload)
         },
         logOut () {
             this.userInfo = ''
@@ -25,19 +26,21 @@ export const useUserStore = defineStore({
         },
         saveMenuList (payload) {
             this.menuList = payload
+            storage.setItem('menuList', payload)
         },
         saveActionList (payload) {
             this.actionList = payload
+            storage.setItem('actionList', payload)
         }
     },
     // 开启数据缓存
-    persist: {
-        enabled: true,
-        strategies: [
-            {
-                key: 'manager',
-                storage: localStorage
-            }
-        ]
-    }
+    // persist: {
+    //     enabled: true,
+    //     strategies: [
+    //         {
+    //             key: 'manager',
+    //             storage: localStorage
+    //         }
+    //     ]
+    // }
 })

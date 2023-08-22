@@ -1,71 +1,43 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import storage from "@/utils/storage";
-import {Message} from "@/utils/ElementUTILS";
+import Home from '@/components/Home.vue'
+import loadAsyncRoutes from "@/router/routerConfig";
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory(),
     routes: [
         {
-            path: '/',
             name: 'home',
-            component: () => import('@/components/Home.vue'),
+            path: '/',
             meta: {
-                title: '首页',
+                title: '首页'
             },
-            redirect: 'Welcome',
-            // 这里的welcome组件会嵌套进home组件,所以外围的组件是Home
+            component: Home,
+            redirect: '/welcome',
             children: [
                 {
-                    name: 'Welcome',
+                    name: 'welcome',
                     path: '/welcome',
-                    component: () => import('../views/Welcome.vue'),
                     meta: {
-                        title: '欢迎体验Vue3权限项目',
+                        title: '欢迎体验Vue3全栈课程'
                     },
-                },
-                {
-                    name: 'user',
-                    path: '/system/user',
-                    meta: {
-                        title: '用户管理'
-                    },
-                    component: () => import('@/views/User.vue')
-                },
-                {
-                    name: 'menu',
-                    path: '/system/menu',
-                    meta: {
-                        title: '菜单管理'
-                    },
-                    component: () => import('@/views/Menu.vue')
-                },
-                {
-                    name: 'role',
-                    path: '/system/role',
-                    meta: {
-                        title: '角色管理'
-                    },
-                    component: () => import('@/views/Role.vue')
-                },
-                {
-                    name: 'dept',
-                    path: '/system/dept',
-                    meta: {
-                        title: '部门管理'
-                    },
-                    component: () => import('@/views/Dept.vue')
-                },
+                    component: () => import('@/views/Welcome.vue')
+                }
             ]
-        }, {
+        },
+        {
             name: 'login',
             path: '/login',
-            component: () => import('../views/Login.vue'),
             meta: {
-                title: "登陆"
-            }
-        }, {
-            path: '/404',
+                title: '登录'
+            },
+            component: () => import('@/views/Login.vue')
+        },
+        {
             name: '404',
+            path: '/404',
+            meta: {
+                title: '页面不存在'
+            },
             component: () => import('@/views/404.vue')
         }, {
             path: '/:pathMatch(.*)',
@@ -74,19 +46,42 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    const {token} = storage.getItem('userInfo') || ''
-    if (token) {
-        next()
-    } else {
-        // 没token就返回login
-        if (to.path === '/login') {
+// TODO 只需要使用hasRoute就可以实现
+// function checkPermission (path) {
+//     return router.getRoutes().some(item => item.path === path)
+// }
+
+// 动态路由
+
+await loadAsyncRoutes(router)
+
+
+// TODO 测试动态路由
+// router.addRoute('home', {
+//     name: 'zs',
+//     path: 'system/zs',
+//     component: () => import('@/views/zs.vue')
+// })
+
+
+router.beforeEach(async (to, from, next) => {
+    if (to.name) {
+        if (router.hasRoute(to.name)) {
+            document.title = to.meta['title'] || 'vite'
             next()
         } else {
-            next('/login')
-            Message('请登陆后再试', 'error')
+            next('/404')
+        }
+    } else {
+        // 代表要动态生成
+        await loadAsyncRoutes()
+        let curRoute = router.getRoutes().filter(item => item.path === to.path)
+        if (curRoute?.length) {
+            document.title = curRoute[0].meta['title'];
+            next({...to, replace: true})
+        } else {
+            next('/404')
         }
     }
 })
-
 export default router

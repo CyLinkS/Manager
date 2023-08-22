@@ -5,6 +5,7 @@ import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
 import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
+import loadAsyncRoutes from "@/router/routerConfig";
 // 数据汇总
 const data = ref({
     // 用户
@@ -32,15 +33,20 @@ const router = useRouter()
 
 // 得到loginForm dom节点
 const loginForm = ref(null)
+
+
 // 校验输入
 const login = () => {
     loginForm.value.validate(async (valid) => {
         if (valid) {
             try {
                 const res = await Login(data.value.user)
-                Notification('登陆成功', 'success')
-                user.saveUserInfo(res)
-                await router.replace('/')
+                if (res) {
+                    Notification('登陆成功', 'success')
+                    user.saveUserInfo(res)
+                    await loadAsyncRoutes(router)
+                    await router.replace('/')
+                }
             } catch (err) {
                 await Promise.reject(err)
             }
@@ -49,6 +55,8 @@ const login = () => {
         }
     })
 }
+
+
 // 测试pinia
 let user = useUserStore()
 
