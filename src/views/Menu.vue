@@ -32,7 +32,8 @@
                 <el-table-column label="操作" width="200">
                     <template #default="scope">
                         <!--判断一下按钮是否需要新增-->
-                        <el-button v-show="scope.row.menuType === 1" v-has="'create'" @click="handleCreate(2,scope.row)"
+                        <el-button v-show="scope.row.menuType === 1" v-has="'menu-create'"
+                                   @click="handleCreate(2,scope.row)"
                                    size="small">新增
                         </el-button>
                         <el-button @click="handleOneEdit(scope.row)" v-has="'menu-edit'" size="small">编辑</el-button>
