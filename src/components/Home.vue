@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/stores/user";
-import {getNoticeCount, getMenuList} from '@/utils/api'
+import {getNoticeCount, getPermissionList} from '@/utils/api'
 import {storeToRefs} from 'pinia'
 import TreeMenu from "@/components/TreeMenu.vue";
 import {ArrowDown, BellFilled, Expand, Fold} from "@element-plus/icons-vue";
@@ -10,7 +10,7 @@ import BreadCrumb from "@/components/BreadCrumb.vue";
 import storage from "@/utils/storage";
 // 获取store中的用户信息
 const userStore = useUserStore()
-let {userInfo} = storeToRefs(userStore)
+let {userInfo, updateTime} = storeToRefs(userStore)
 
 // 切换侧边栏字段定义
 const isCollapse = ref(false)
@@ -35,8 +35,10 @@ const userMenu = ref([])
 const handleMenuList = async () => {
     try {
         let res;
-        res = await getMenuList();
-        userMenu.value = res
+        res = await getPermissionList();
+        userMenu.value = res.menuList
+        userStore.saveMenuList(res.menuList)
+        userStore.saveActionList(res.actionList)
     } catch (err) {
         await Promise.reject(err)
     }
@@ -50,6 +52,9 @@ watch(route, (newVal) => {
     activeMenu.value = newVal.fullPath
 })
 
+watch(updateTime, () => {
+    handleMenuList()
+})
 
 // 在组件挂载时候请求一次
 onMounted(() => {

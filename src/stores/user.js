@@ -4,17 +4,30 @@ import storage from "@/utils/storage";
 export const useUserStore = defineStore({
     // 每个模块都有独立的id
     id: 'user',
-    state() {
+    state () {
         return {
-            userInfo: {} || storage.getItem('userInfo') // 获取用户信息
+            userInfo: storage.getItem('userInfo') || {}, // 获取用户信息
+            updateTime: +new Date(),
+            menuList: storage.getItem('menuList') || [],
+            actionList: storage.getItem('actionList') || []
         }
     },
     actions: {
-        saveUserInfo(payload) {
+        saveUserInfo (payload) {
             this.userInfo = payload
         },
-        logOut() {
+        logOut () {
             this.userInfo = ''
+        },
+        // 使用此方法来标记菜单列表实时更新
+        updateFn () {
+            this.updateTime = +new Date() + 1
+        },
+        saveMenuList (payload) {
+            this.menuList = payload
+        },
+        saveActionList (payload) {
+            this.actionList = payload
         }
     },
     // 开启数据缓存

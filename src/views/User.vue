@@ -287,8 +287,9 @@ const handleEdit = (row) => {
         </div>
         <div class="base-table">
             <div class="action">
-                <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
-                <el-button type="danger" size="small" @click="handlePatch">批量删除</el-button>
+                <el-button type="primary" v-has="'user-create'" size="small" @click="handleCreate">新增</el-button>
+                <el-button type="danger" v-has="'user-patch-delete'" size="small" @click="handlePatch">批量删除
+                </el-button>
             </div>
             <el-table :data="userList" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"/>
@@ -300,13 +301,13 @@ const handleEdit = (row) => {
                                  :width="item.width"/>
                 <el-table-column label="操作" width="150">
                     <template #default="scope">
-                        <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button size="small" v-has="'user-edit'" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-popconfirm title="是否确认?"
                                        @confirm="handleOneUserDel(scope.row)"
                                        @cancel="()=>Message('取消删除','error')"
                         >
                             <template #reference>
-                                <el-button type="danger" size="small">删除</el-button>
+                                <el-button type="danger" v-has="'user-delete'" size="small">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>

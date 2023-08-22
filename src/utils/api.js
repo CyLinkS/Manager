@@ -35,6 +35,17 @@ export const getUserList = (params) => {
         mock: false
     })
 }
+
+// 全量的用户列表
+export const getAllUserList = (params) => {
+    return request({
+        url: '/users/all/list',
+        method: 'get',
+        data: params,
+        mock: false
+    })
+}
+
 // 用户删除(可以单个删除也可以批量删除)
 export const UserDel = (params) => {
     return request({
@@ -59,7 +70,8 @@ export const getDeptListApi = () => {
     return request({
         url: '/dept/list',
         method: 'get',
-        data: {}
+        data: {},
+        mock: false
     })
 }
 
@@ -106,6 +118,36 @@ export const updatePermission = (params) => {
         url: '/roles/update/permission',
         method: 'post',
         data: params,
+        mock: false
+    })
+}
+
+// 获取部门列表
+export const getDeptList = (params) => {
+    return request({
+        url: '/dept/list',
+        method: 'get',
+        data: params,
+        mock: false
+    })
+}
+
+// 部门操作
+export const deptOperate = (params) => {
+    return request({
+        url: '/dept/operate',
+        method: 'post',
+        data: params,
+        mock: false
+    })
+}
+
+//获取权限列表
+export const getPermissionList = () => {
+    return request({
+        url: '/users/getPermissionList',
+        method: 'get',
+        data: {},
         mock: false
     })
 }
