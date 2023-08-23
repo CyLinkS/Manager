@@ -142,12 +142,30 @@ export const deptOperate = (params) => {
     })
 }
 
-//获取权限列表
+// 获取权限列表
 export const getPermissionList = () => {
     return request({
         url: '/users/getPermissionList',
         method: 'get',
         data: {},
         mock: false
+    })
+}
+
+// 获取审批列表
+export const leaveListApi = (params) => {
+    return request({
+        url: '/leave/list',
+        method: 'get',
+        data: params
+    })
+}
+
+// 提交审请操作
+export const leaveOperate = (params) => {
+    return request({
+        url: '/leave/operate',
+        method: 'post',
+        data: params
     })
 }

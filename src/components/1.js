@@ -73,3 +73,4 @@ const router = [
         redirect: '/404'
     }
 ]
+

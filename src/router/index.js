@@ -1,6 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '@/components/Home.vue'
-import loadAsyncRoutes from "@/router/routerConfig";
+import storage from "@/utils/storage";
+import {getPermissionList} from "@/utils/api";
+import generateRoute from "@/router/utils";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -51,9 +53,27 @@ const router = createRouter({
 //     return router.getRoutes().some(item => item.path === path)
 // }
 
-// 动态路由
 
-await loadAsyncRoutes(router)
+// 动态路由
+async function loadAsyncRoutes () {
+    let userInfo = storage.getItem('userInfo') || []
+    if (userInfo.token) {
+        try {
+            const {menuList} = await getPermissionList()
+            let routes = generateRoute(menuList)
+            const modules = import.meta.glob('../views/*.vue')
+            routes.map(route => {
+                let url = `../views/${route.name}.vue`
+                route.component = modules[url];
+                router.addRoute("home", route);
+            })
+        } catch (error) {
+            await Promise.reject(error)
+        }
+    }
+}
+
+await loadAsyncRoutes()
 
 
 // TODO 测试动态路由
@@ -73,7 +93,7 @@ router.beforeEach(async (to, from, next) => {
             next('/404')
         }
     } else {
-        // 代表要动态生成
+        // 如果name没有就重新再加载一次动态路由步骤
         await loadAsyncRoutes()
         let curRoute = router.getRoutes().filter(item => item.path === to.path)
         if (curRoute?.length) {
@@ -84,4 +104,6 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 })
-export default router
+
+
+export default {router, loadAsyncRoutes}

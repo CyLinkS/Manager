@@ -5,7 +5,7 @@ import {Login} from "@/utils/api";
 import {Notification} from "@/utils/ElementUTILS";
 import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
-import loadAsyncRoutes from "@/router/routerConfig";
+import routes from "@/router";
 // 数据汇总
 const data = ref({
     // 用户
@@ -44,7 +44,7 @@ const login = () => {
                 if (res) {
                     Notification('登陆成功', 'success')
                     user.saveUserInfo(res)
-                    await loadAsyncRoutes(router)
+                    await routes.loadAsyncRoutes()
                     await router.replace('/')
                 }
             } catch (err) {

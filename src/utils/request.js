@@ -1,7 +1,6 @@
 import axios from "axios";
 import config from "@/config";
 import {ElMessage} from 'element-plus'
-import router from '@/router'
 import storage from "@/utils/storage";
 // 状态
 const TOKEN_INVALID = 'Token认证失败,请重新登陆'
@@ -33,7 +32,7 @@ service.interceptors.response.use((res) => {
         ElMessage.error(msg ? msg : TOKEN_INVALID)
         setTimeout(() => {
             // 这里会有报错提示
-            router.push({path: "/login"}).then()
+            window.location.href = "/login"
         }, 1500)
         return Promise.reject(msg)
 

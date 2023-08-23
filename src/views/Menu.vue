@@ -99,8 +99,10 @@ import {dayjs} from "element-plus";
 import {getMenuList, menuSubmit} from "@/utils/api";
 import {Message} from "@/utils/ElementUTILS";
 import {useUserStore} from "@/stores/user";
+import routes from "@/router";
 // 获取store中的用户信息
 const userStore = useUserStore()
+
 // 查询菜单字段定义
 const queryForm = reactive({
     menuState: 1
@@ -248,7 +250,6 @@ const handleClose = () => {
 }
 
 
-// let {userInfo} = storeToRefs(userStore)
 // 定义操作类型
 let action = ref('add')
 
@@ -266,6 +267,7 @@ const handleSubmit = () => {
             showModel.value = false
             Message()
             dialogFormRef.value.resetFields()
+            await routes.loadAsyncRoutes()
             await handleGetMenuList()
             userStore.updateFn()
         } catch (err) {
