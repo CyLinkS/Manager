@@ -3,6 +3,7 @@ import Home from '@/components/Home.vue'
 import storage from "@/utils/storage";
 import {getPermissionList} from "@/utils/api";
 import generateRoute from "@/router/utils";
+import {Message} from "@/utils/ElementUTILS";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -74,33 +75,34 @@ async function loadAsyncRoutes () {
 }
 
 
-// TODO 测试动态路由
+// TODO 动态路由的思路
 // router.addRoute('home', {
 //     name: 'zs',
 //     path: 'system/zs',
+//     meta:{
+//          title:'张三'
+//     }
 //     component: () => import('@/views/zs.vue')
 // })
-
-
 router.beforeEach(async (to, from, next) => {
-    if (to.name) {
-        if (router.hasRoute(to.name)) {
-            document.title = to.meta['title'] || 'vite'
-            next()
+    let userInfo = storage.getItem('userInfo') || []
+    let token = userInfo.token || ''
+    if (token) {
+        if (token && to.path === '/login') {
+            Message('已登陆,请退出再试', 'error')
+            next('/')
         } else {
-            next('/404')
+            next()
         }
     } else {
-        // 如果name没有就重新再加载一次动态路由步骤
-        await loadAsyncRoutes()
-        let curRoute = router.getRoutes().filter(item => item.path === to.path)
-        if (curRoute?.length) {
-            document.title = curRoute[0].meta['title'];
-            next({...to, replace: true})
-        } else {
-            next('/404')
-        }
+        next()
     }
 })
+// 修改标题的工作可以放在全局后置守卫
+router.afterEach((to, from) => {
+    if (to.meta['title']) {
+        document.title = to.meta['title'] || 'ViteApp-权限管理系统'
+    }
+});
 
 export default {router, loadAsyncRoutes}

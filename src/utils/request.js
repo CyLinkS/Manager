@@ -37,6 +37,7 @@ service.interceptors.response.use((res) => {
             // 这里会有报错提示
             routes.router.push("/login").then()
         } else {
+            // 清空token跳转
             storage.clearAll()
             window.location.href = ('/login')
         }

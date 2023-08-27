@@ -2,8 +2,7 @@
 function generateRoute (menuList) {
     let routes = []
     const deepList = (list) => {
-        while (list.length) {
-            let item = list.pop()
+        for (const item of list) {
             if (item.action) {
                 routes.push({
                     name: item.component,
