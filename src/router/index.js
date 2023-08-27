@@ -73,8 +73,6 @@ async function loadAsyncRoutes () {
     }
 }
 
-await loadAsyncRoutes()
-
 
 // TODO 测试动态路由
 // router.addRoute('home', {
@@ -104,6 +102,5 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 })
-
 
 export default {router, loadAsyncRoutes}

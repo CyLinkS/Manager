@@ -1,3 +1,4 @@
+import routes from '@/router/index'
 import axios from "axios";
 import config from "@/config";
 import {ElMessage} from 'element-plus'
@@ -19,6 +20,8 @@ service.interceptors.request.use((req) => {
     if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
     return req
 })
+
+
 //响应拦截
 service.interceptors.response.use((res) => {
     const {code, data, msg} = res.data
@@ -30,10 +33,14 @@ service.interceptors.response.use((res) => {
         return Promise.reject(msg)
     } else if (code === 500001) {
         ElMessage.error(msg ? msg : TOKEN_INVALID)
-        setTimeout(() => {
+        if (routes) {
             // 这里会有报错提示
-            window.location.href = "/login"
-        }, 1500)
+            routes.router.push("/login").then()
+        } else {
+            storage.clearAll()
+            window.location.href = ('/login')
+        }
+
         return Promise.reject(msg)
 
     } else {
