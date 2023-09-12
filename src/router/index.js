@@ -95,7 +95,12 @@ router.beforeEach(async (to, from, next) => {
             next()
         }
     } else {
-        next()
+        if (to.path === '/login') {
+            next()
+        } else {
+            Message('请先登陆', 'error')
+            next('/login')
+        }
     }
 })
 // 修改标题的工作可以放在全局后置守卫

@@ -2,7 +2,7 @@
 import {User, View} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import {Login} from "@/utils/api";
-import {Notification} from "@/utils/ElementUTILS";
+import {Message, Notification} from "@/utils/ElementUTILS";
 import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
 import routes from "@/router";
@@ -48,6 +48,9 @@ const login = () => {
                     await router.replace('/')
                 }
             } catch (err) {
+                if (err.response.status === 500) {
+                    Message('服务器未响应', 'error')
+                }
                 await Promise.reject(err)
             }
         } else {

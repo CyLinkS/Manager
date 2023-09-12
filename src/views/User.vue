@@ -101,6 +101,7 @@ const handleOneUserDel = async (row) => {
         Message('删除成功')
         await handleUserList()
     } catch (err) {
+        console.log(1)
         await Promise.reject(err)
     }
 }

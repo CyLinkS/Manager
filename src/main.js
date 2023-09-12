@@ -14,7 +14,6 @@ import storage from "@/utils/storage";
 const app = createApp(App)
 await routes.loadAsyncRoutes()
 console.log('环境变量=>', import.meta.env)
-console.log('路由=>', routes)
 app.use(ElementPlus, {
     locale: zhCn,
 })

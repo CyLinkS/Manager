@@ -1,12 +1,14 @@
-import routes from '@/router/index'
 import axios from "axios";
 import config from "@/config";
 import {ElMessage} from 'element-plus'
 import storage from "@/utils/storage";
+import routes from '@/router'
 // 状态
 const TOKEN_INVALID = 'Token认证失败,请重新登陆'
 const NETWORK_ERR = '网络异常,请稍后再试'
 const USER_ERROR = '账号或密码不正确'
+const isRefreshing = false
+
 // 创建axios实例对象,添加全局配置
 const service = axios.create({
     baseURL: config.baseApi,
@@ -33,15 +35,8 @@ service.interceptors.response.use((res) => {
         return Promise.reject(msg)
     } else if (code === 500001) {
         ElMessage.error(msg ? msg : TOKEN_INVALID)
-        if (routes) {
-            // 这里会有报错提示
-            routes.router.push("/login").then()
-        } else {
-            // 清空token跳转
-            storage.clearAll()
-            window.location.href = ('/login')
-        }
-
+        storage.clearAll()
+        routes.router.replace('/login').then()
         return Promise.reject(msg)
 
     } else {
